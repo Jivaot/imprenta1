@@ -82,7 +82,7 @@ export default function QuotePage() {
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
           <form
             onSubmit={handleSubmit}
-            className="space-y-5 rounded-[34px] border border-[rgba(15,140,147,0.14)] bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]"
+            className="glass-card space-y-5 p-6"
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -92,7 +92,7 @@ export default function QuotePage() {
                   name="clientName"
                   value={formState.clientName}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
               <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -101,7 +101,7 @@ export default function QuotePage() {
                   name="company"
                   value={formState.company}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                   placeholder="Opcional"
                 />
               </label>
@@ -116,7 +116,7 @@ export default function QuotePage() {
                   name="email"
                   value={formState.email}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
               <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -126,7 +126,7 @@ export default function QuotePage() {
                   name="phone"
                   value={formState.phone}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
             </div>
@@ -139,7 +139,7 @@ export default function QuotePage() {
                   value={formState.productName}
                   onChange={handleChange}
                   placeholder="Ej: Taza clasica blanca 11 oz"
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
               <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -148,7 +148,7 @@ export default function QuotePage() {
                   name="typeOfWork"
                   value={formState.typeOfWork}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 >
                   {quoteWorkTypes.map((item) => (
                     <option key={item} value={item}>
@@ -166,7 +166,7 @@ export default function QuotePage() {
                   name="quantity"
                   value={formState.quantity}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
               <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -175,7 +175,7 @@ export default function QuotePage() {
                   name="printArea"
                   value={formState.printArea}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
               <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -184,7 +184,7 @@ export default function QuotePage() {
                   name="finish"
                   value={formState.finish}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
             </div>
@@ -196,7 +196,7 @@ export default function QuotePage() {
                   name="deliveryMethod"
                   value={formState.deliveryMethod}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 >
                   <option value="Retiro coordinado">Retiro coordinado</option>
                   <option value="Despacho en Santiago">Despacho en Santiago</option>
@@ -210,7 +210,7 @@ export default function QuotePage() {
                   value={formState.city}
                   onChange={handleChange}
                   placeholder="Ej: Providencia"
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
             </div>
@@ -223,7 +223,7 @@ export default function QuotePage() {
                   name="neededDate"
                   value={formState.neededDate}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
               <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -231,7 +231,7 @@ export default function QuotePage() {
                 <input
                   type="file"
                   onChange={handleFile}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none file:mr-3 file:rounded-full file:border-0 file:bg-[#0f8c93] file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none file:mr-3 file:rounded-full file:border-0 file:bg-[#173a63] file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white"
                 />
               </label>
             </div>
@@ -244,7 +244,7 @@ export default function QuotePage() {
                 rows={5}
                 value={formState.description}
                 onChange={handleChange}
-                className="w-full rounded-[24px] border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                className="w-full rounded-[24px] border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 placeholder="Cuentanos si necesitas nombres por unidad, logo, frase, empaque o una fecha especifica."
               />
             </label>
@@ -252,7 +252,7 @@ export default function QuotePage() {
             <div className="grid gap-3 sm:grid-cols-2">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0f8c93] px-5 py-4 text-sm font-semibold text-white transition hover:bg-[#14697b]"
+                className="brand-button-primary inline-flex items-center justify-center gap-2 rounded-full px-5 py-4 text-sm font-semibold"
               >
                 <FiFileText />
                 Guardar solicitud
@@ -261,7 +261,7 @@ export default function QuotePage() {
                 href={whatsappLink}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-5 py-4 text-sm font-semibold text-white transition hover:bg-emerald-400"
+                className="brand-button-accent inline-flex items-center justify-center gap-2 rounded-full px-5 py-4 text-sm font-semibold"
               >
                 <FiMessageCircle />
                 Enviar por WhatsApp
@@ -270,13 +270,13 @@ export default function QuotePage() {
           </form>
 
           <div className="space-y-5">
-            <div className="rounded-[34px] bg-slate-950 p-6 text-white shadow-[0_30px_100px_rgba(15,23,42,0.24)]">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-orange-200">
+            <div className="brand-dark-panel rounded-[34px] p-6 text-white shadow-[0_30px_100px_rgba(15,23,42,0.24)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#bfeaff]">
                 Resumen de tu solicitud
               </p>
               <div className="mt-6 space-y-4 rounded-[28px] border border-white/10 bg-white/5 p-5">
                 <div className="flex items-center gap-3 text-sm text-slate-300">
-                  <FiUploadCloud className="text-orange-300" />
+                  <FiUploadCloud className="text-[#8fd8ff]" />
                   {formState.fileName || 'Sin archivo adjunto'}
                 </div>
                 <p className="font-display text-3xl font-black">
@@ -302,8 +302,8 @@ export default function QuotePage() {
             </div>
 
             {savedQuote ? (
-              <div className="rounded-[30px] border border-emerald-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
-                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-700">
+              <div className="rounded-[30px] border border-[rgba(63,151,212,0.22)] bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#245c88]">
                   Solicitud registrada
                 </p>
                 <p className="mt-3 font-display text-2xl font-black text-slate-950">
@@ -316,7 +316,7 @@ export default function QuotePage() {
             ) : null}
 
             <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-orange-600">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
                 Antes de cotizar
               </p>
               <div className="mt-5 space-y-4">

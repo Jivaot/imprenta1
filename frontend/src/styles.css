@@ -9,9 +9,9 @@
   --line: rgba(255, 255, 255, 0.08);
   --text: #f8f4ea;
   --muted: #bbbfcc;
-  --accent: #ff6b2c;
-  --accent-soft: #ffb067;
-  --signal: #35d0ba;
+  --accent: #3f97d4;
+  --accent-soft: #6dc8ef;
+  --signal: #6dc8ef;
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
 }
 
@@ -27,7 +27,7 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at top left, rgba(255, 107, 44, 0.18), transparent 28%),
+    radial-gradient(circle at top left, rgba(63, 151, 212, 0.18), transparent 28%),
     radial-gradient(circle at 85% 12%, rgba(53, 208, 186, 0.18), transparent 24%),
     linear-gradient(160deg, #050b14 0%, #08101d 48%, #0d1728 100%);
   color: var(--text);
@@ -59,7 +59,7 @@ a {
   right: -6rem;
   width: 18rem;
   height: 18rem;
-  background: radial-gradient(circle, rgba(255, 176, 103, 0.55), transparent 70%);
+  background: radial-gradient(circle, rgba(109, 200, 239, 0.55), transparent 70%);
   animation: floatPulse 8s ease-in-out infinite;
 }
 
@@ -104,7 +104,7 @@ a {
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--accent), #ff9f43);
+  background: linear-gradient(135deg, var(--accent), #6dc8ef);
   color: #fff4ea;
   font-family: 'Syne', sans-serif;
   font-size: 1.2rem;
@@ -160,9 +160,9 @@ a {
 
 .nav-cta,
 .button-primary {
-  background: linear-gradient(135deg, var(--accent), #ff9355);
+  background: linear-gradient(135deg, var(--accent), #55b7ee);
   color: #fff5ed;
-  box-shadow: 0 14px 30px rgba(255, 107, 44, 0.28);
+  box-shadow: 0 14px 30px rgba(63, 151, 212, 0.28);
 }
 
 .button-secondary {
@@ -300,7 +300,7 @@ a {
 .visual-main {
   min-height: 320px;
   background:
-    linear-gradient(145deg, rgba(255, 107, 44, 0.28), rgba(8, 15, 28, 0.7)),
+    linear-gradient(145deg, rgba(63, 151, 212, 0.28), rgba(8, 15, 28, 0.7)),
     linear-gradient(160deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
 }
 
@@ -314,7 +314,7 @@ a {
 
 .card-kicker,
 .visual-card p {
-  color: #ffd4bb;
+  color: #d8ecff;
   font-size: 0.9rem;
 }
 
@@ -336,7 +336,7 @@ a {
 
 .warm {
   min-height: 180px;
-  background: linear-gradient(180deg, rgba(255, 176, 103, 0.22), rgba(9, 17, 31, 0.82));
+  background: linear-gradient(180deg, rgba(109, 200, 239, 0.22), rgba(9, 17, 31, 0.82));
 }
 
 .dark {
@@ -516,7 +516,7 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 34px;
   background:
-    linear-gradient(135deg, rgba(255, 107, 44, 0.2), rgba(255, 255, 255, 0.03)),
+    linear-gradient(135deg, rgba(63, 151, 212, 0.2), rgba(255, 255, 255, 0.03)),
     rgba(10, 19, 32, 0.8);
   box-shadow: var(--shadow);
 }
@@ -577,7 +577,7 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 34px;
   background:
-    radial-gradient(circle at left top, rgba(255, 176, 103, 0.2), transparent 30%),
+    radial-gradient(circle at left top, rgba(109, 200, 239, 0.2), transparent 30%),
     rgba(8, 15, 28, 0.92);
   box-shadow: var(--shadow);
 }

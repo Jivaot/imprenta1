@@ -31,8 +31,8 @@ export default function AboutPage() {
         />
 
         <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded-[34px] bg-slate-950 p-8 text-white shadow-[0_30px_100px_rgba(15,23,42,0.24)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-orange-200">
+          <div className="brand-dark-panel rounded-[34px] p-8 text-white shadow-[0_30px_100px_rgba(15,23,42,0.24)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#bfeaff]">
               {siteSettings.brandName}
             </p>
             <h2 className="mt-4 font-display text-4xl font-black tracking-tight">

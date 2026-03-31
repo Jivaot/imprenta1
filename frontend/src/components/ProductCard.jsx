@@ -1,76 +1,127 @@
 import React from 'react';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-import { FiArrowUpRight } from 'react-icons/fi';
+import { useDispatch } from 'react-redux';
+import { FiArrowUpRight, FiShoppingCart } from 'react-icons/fi';
+import { addItem } from '../store/slices/cartSlice';
 import { formatPrice } from '../utils/helpers';
 
 export default function ProductCard({ product }) {
+  const dispatch = useDispatch();
+  const defaultQuantity = Math.max(product.min_qty || 1, 1);
+
+  const handleAddToCart = () => {
+    dispatch(
+      addItem({
+        productId: product.id,
+        productSlug: product.slug,
+        name: product.name,
+        image: product.image_url,
+        unitPrice: product.price,
+        quantity: defaultQuantity,
+        categoryName: product.type,
+        selectedPackaging: product.packagingOptions?.[0] || '',
+        minQuantity: defaultQuantity,
+      })
+    );
+
+    toast.success(`${product.name} agregado al carrito`);
+  };
+
   return (
-    <article className="glass-card glass-card-hover group overflow-hidden">
-      <Link className="block overflow-hidden bg-white/50" to={`/producto/${product.slug}`}>
+    <article className="glass-card glass-card-hover group flex h-full flex-col overflow-hidden rounded-2xl transition-all duration-300">
+      <Link
+        className="block aspect-square overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 p-3 sm:p-4"
+        to={`/producto/${product.slug}`}
+        aria-label={`Ver detalle de ${product.name}`}
+      >
         <img
           src={product.image_url}
           alt={product.name}
-          className="h-64 w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+          className="h-full w-full object-contain transition duration-500 group-hover:scale-[1.08]"
           loading="lazy"
         />
       </Link>
 
-      <div className="space-y-4 p-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="brand-pill px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#4f6f75]">
+      <div className="flex flex-1 flex-col gap-3 p-4 sm:p-4">
+        {/* Tags */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="inline-block rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">
             {product.type}
           </span>
-          <span className="rounded-full bg-[#fff0de] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#dd7d18]">
+          <span className="inline-block rounded-full bg-cyan-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-cyan-700">
             {product.capacityLabel}
           </span>
         </div>
 
-        <div>
-          <Link
-            to={`/producto/${product.slug}`}
-            className="font-display text-xl font-bold tracking-tight text-[#184a53] transition hover:text-[#0f8c93]"
-          >
+        {/* Título */}
+        <Link
+          to={`/producto/${product.slug}`}
+          className="transition hover:text-blue-600"
+        >
+          <p className="clamp-2 font-bold leading-tight text-slate-800 text-sm sm:text-base">
             {product.name}
-          </Link>
-          {product.shortDescription ? (
-            <p className="mt-2 text-sm leading-6 text-[#56747b]">{product.shortDescription}</p>
-          ) : null}
-        </div>
+          </p>
+        </Link>
 
-        <div className="grid gap-3 rounded-[24px] bg-white/60 p-4 text-sm text-[#56747b]">
-          <div className="flex items-end justify-between gap-3">
+        {/* Descripción - más compacta */}
+        {product.shortDescription ? (
+          <p className="line-clamp-2 text-xs sm:text-sm leading-relaxed text-slate-600">
+            {product.shortDescription}
+          </p>
+        ) : null}
+
+        {/* Precio y Info */}
+        <div className="rounded-xl bg-white/70 p-3 space-y-2">
+          <div className="flex items-end justify-between gap-2">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-[#7b9195]">Precio base</p>
-              <div className="flex items-end gap-2">
-                <p className="text-2xl font-extrabold tracking-tight text-[#184a53]">
+              <p className="text-[9px] uppercase tracking-wider text-slate-500 font-semibold">Precio</p>
+              <div className="flex items-end gap-1.5">
+                <p className="text-lg sm:text-xl font-bold text-slate-800">
                   {formatPrice(product.price)}
                 </p>
                 {product.compareAtPrice ? (
-                  <p className="pb-0.5 text-xs text-[#7b9195] line-through">
+                  <p className="pb-0.5 text-[9px] text-slate-400 line-through">
                     {formatPrice(product.compareAtPrice)}
                   </p>
                 ) : null}
               </div>
             </div>
-            <p className="text-right text-xs text-[#56747b]">{product.production_time}</p>
+            {product.production_time && (
+              <p className="text-[9px] leading-tight text-slate-500 text-right max-w-[5rem]">
+                {product.production_time}
+              </p>
+            )}
           </div>
-          <div className="flex items-center justify-between text-xs text-[#56747b]">
-            <span>{product.minQtyLabel}</span>
-            <span>{product.discountLabel || product.badge}</span>
+          <div className="flex items-center justify-between gap-2 text-[9px] text-slate-600">
+            <span className="truncate">{product.minQtyLabel}</span>
+            {product.discountLabel && (
+              <span className="inline-block bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-semibold whitespace-nowrap">
+                {product.discountLabel}
+              </span>
+            )}
           </div>
         </div>
 
-        <div className="flex items-center justify-between border-t border-[rgba(15,140,147,0.12)] pt-3">
-          <span className="text-sm font-medium text-[#56747b]">
-            {product.isCustomizable ? 'Personalizable' : 'Disponible'}
-          </span>
+        {/* Links y botón */}
+        <div className="mt-auto space-y-2">
           <Link
             to={`/producto/${product.slug}`}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#0f8c93] transition hover:text-[#14697b]"
+            className="inline-flex items-center justify-center gap-1.5 w-full text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-800 rounded-lg hover:bg-blue-50 py-1.5 transition"
           >
-            Ver producto
-            <FiArrowUpRight />
+            Ver ficha completa
+            <FiArrowUpRight size={14} />
           </Link>
+
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 px-3 py-2 text-xs sm:text-sm font-bold text-white shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+          >
+            <FiShoppingCart size={16} />
+            <span className="hidden sm:inline">Agregar</span>
+            <span className="sm:hidden">+</span>
+          </button>
         </div>
       </div>
     </article>

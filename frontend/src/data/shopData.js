@@ -42,8 +42,8 @@ const createMugArtwork = (title, tag, palette) => {
 };
 
 export const siteSettings = {
-  brandName: 'Tazas Matriz',
-  shortName: 'TM',
+  brandName: 'JAMA IMAGEN',
+  shortName: 'JI',
   tagline: 'Tazas personalizadas para marcas, regalos y pedidos especiales',
   whatsappNumber: '56968461122',
   phoneDisplay: '+56 9 6846 1122',
@@ -63,7 +63,7 @@ export const mugTypeMeta = {
     finishOptions: ['Sublimacion full color', 'Logo mas frase', 'Imagen completa'],
     packagingOptions: ['Caja individual', 'Caja premium', 'Sin empaque'],
     useCases: ['Empresas', 'Regalos', 'Eventos', 'Emprendimientos'],
-    palette: ['#dff2ff', '#fff5e9', '#38bdf8'],
+    palette: ['#e9f5ff', '#f7fbff', '#55b7ee'],
   },
   Clasica: {
     badge: 'Top ventas',
@@ -72,7 +72,7 @@ export const mugTypeMeta = {
     finishOptions: ['Sublimacion full color', 'Logo simple', 'Nombre por unidad'],
     packagingOptions: ['Caja individual', 'Bolsa de regalo', 'Sin empaque'],
     useCases: ['Regalos de empresa', 'Recuerdos', 'Venta online'],
-    palette: ['#e3f2ff', '#fff6ea', '#ff9d5c'],
+    palette: ['#edf6ff', '#f8fbff', '#2f90cf'],
   },
   Magica: {
     badge: 'Efecto sorpresa',
@@ -81,7 +81,7 @@ export const mugTypeMeta = {
     finishOptions: ['Sublimacion completa', 'Foto o collage', 'Nombre mas imagen'],
     packagingOptions: ['Caja premium', 'Caja individual'],
     useCases: ['Regalos especiales', 'Campanas', 'Aniversarios'],
-    palette: ['#0f172a', '#2d3748', '#f59e0b'],
+    palette: ['#17293e', '#2a425f', '#7dd3fc'],
   },
   Premium: {
     badge: 'Acabado premium',
@@ -90,7 +90,7 @@ export const mugTypeMeta = {
     finishOptions: ['Sublimacion full color', 'Acabado perlado', 'Caja de presentacion'],
     packagingOptions: ['Caja premium', 'Caja con ventana', 'Bolsa de regalo'],
     useCases: ['Regalos corporativos', 'Tienda premium', 'Eventos'],
-    palette: ['#f4f5ff', '#fef7f0', '#7c89ff'],
+    palette: ['#f4f8ff', '#fbfdff', '#8db6df'],
   },
   Latte: {
     badge: 'Mayor capacidad',
@@ -99,7 +99,7 @@ export const mugTypeMeta = {
     finishOptions: ['Sublimacion completa', 'Logo con nombre', 'Diseno vertical'],
     packagingOptions: ['Caja individual', 'Caja premium'],
     useCases: ['Cafeterias', 'Oficinas', 'Regalos de equipo'],
-    palette: ['#fdf1dc', '#fff8f3', '#f59e0b'],
+    palette: ['#eef7fb', '#fafcff', '#4db7d7'],
   },
   Enamel: {
     badge: 'Estilo outdoor',
@@ -108,7 +108,7 @@ export const mugTypeMeta = {
     finishOptions: ['UV DTF', 'Logo simple', 'Frase corta'],
     packagingOptions: ['Caja kraft', 'Caja individual'],
     useCases: ['Merch de marca', 'Regalos outdoor', 'Kits creativos'],
-    palette: ['#edf7f3', '#f8fffb', '#22c55e'],
+    palette: ['#eff6f9', '#fbfdff', '#5f87b0'],
   },
   Termica: {
     badge: 'Formato ejecutivo',
@@ -117,7 +117,7 @@ export const mugTypeMeta = {
     finishOptions: ['Grabado laser', 'Impresion UV', 'Logo de marca'],
     packagingOptions: ['Caja premium', 'Caja individual'],
     useCases: ['Equipos internos', 'Eventos', 'Regalos corporativos'],
-    palette: ['#eef2f7', '#f9fbfd', '#64748b'],
+    palette: ['#eef2f7', '#f9fbfd', '#526d86'],
   },
   Regalo: {
     badge: 'Lista para regalar',
@@ -126,7 +126,7 @@ export const mugTypeMeta = {
     finishOptions: ['Imagen mas nombre', 'Frase corta', 'Set con accesorio'],
     packagingOptions: ['Caja con cucharita', 'Caja premium', 'Bolsa de regalo'],
     useCases: ['Cumpleanos', 'Celebraciones', 'Ventas estacionales'],
-    palette: ['#fff1f7', '#fff9fc', '#ec4899'],
+    palette: ['#f0f6ff', '#f8fbff', '#6a8fd8'],
   },
 };
 
@@ -283,6 +283,52 @@ const fallbackRows = [
   },
 ];
 
+const fallbackVariantBlueprints = [
+  {
+    suffix: 'Edicion Corporativa',
+    priceDelta: 390,
+    minQtyDelta: 0,
+    descriptionNote: 'Pensada para branding institucional, equipos y acciones de marca con entrega ordenada.',
+  },
+  {
+    suffix: 'Edicion Premium',
+    priceDelta: 690,
+    minQtyDelta: 2,
+    descriptionNote: 'Version con foco en mejor presentacion, regalos y pedidos con imagen mas cuidada.',
+  },
+  {
+    suffix: 'Edicion Full Color',
+    priceDelta: 520,
+    minQtyDelta: 4,
+    descriptionNote: 'Ideal para disenos mas vistosos, logos completos y producciones para fechas especiales.',
+  },
+  {
+    suffix: 'Edicion Evento',
+    priceDelta: 310,
+    minQtyDelta: 6,
+    descriptionNote: 'Preparada para lotes, celebraciones, recuerdos y pedidos con volumen comercial.',
+  },
+];
+
+const fallbackVariantRows = fallbackRows.flatMap((row, rowIndex) =>
+  fallbackVariantBlueprints.map((variant, variantIndex) => ({
+    ...row,
+    id: `${row.id}-v${variantIndex + 1}`,
+    name: `${row.name} ${variant.suffix}`,
+    price: row.price + variant.priceDelta,
+    min_qty: Math.max(1, row.min_qty + variant.minQtyDelta),
+    description: `${row.description} ${variant.descriptionNote}`,
+    featured: false,
+    sort_order:
+      fallbackRows.length + rowIndex * fallbackVariantBlueprints.length + variantIndex + 1,
+    updated_at: `2026-03-31T${String(9 + variantIndex).padStart(2, '0')}:${String(
+      rowIndex * 5
+    ).padStart(2, '0')}:00.000Z`,
+  }))
+);
+
+const expandedFallbackRows = [...fallbackRows, ...fallbackVariantRows];
+
 const buildShortDescription = (description, type) =>
   truncateText(description || mugTypeMeta[type]?.heroNote || 'Taza personalizada para pedidos especiales.', 110);
 
@@ -334,7 +380,7 @@ export const enrichProduct = (row, index = 0) => {
   };
 };
 
-export const fallbackProducts = fallbackRows.map((row, index) => enrichProduct(row, index));
+export const fallbackProducts = expandedFallbackRows.map((row, index) => enrichProduct(row, index));
 
 export const heroHighlights = [
   {

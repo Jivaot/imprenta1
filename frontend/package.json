@@ -2,6 +2,7 @@
   "name": "estampados-frontend",
   "version": "1.0.0",
   "description": "Frontend React para plataforma de estampados personalizados",
+  "type": "module",
   "private": true,
   "dependencies": {
     "@react-three/drei": "^9.122.0",

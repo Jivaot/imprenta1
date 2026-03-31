@@ -97,8 +97,8 @@ export default function ProductsPage() {
             onClick={() => handleTypeChange('Todas')}
             className={`brand-pill px-4 py-2 text-sm font-semibold transition ${
               currentType === 'Todas'
-                ? 'bg-[#0f8c93] text-white shadow-[0_12px_28px_rgba(15,140,147,0.2)]'
-                : 'text-[#28535b] hover:border-[rgba(15,140,147,0.28)] hover:text-[#184a53]'
+                ? 'bg-[#3f97d4] text-white shadow-[0_12px_28px_rgba(63,151,212,0.2)]'
+                : 'text-[#28535b] hover:border-[rgba(63,151,212,0.28)] hover:text-[#184a53]'
             }`}
           >
             Todas
@@ -110,8 +110,8 @@ export default function ProductsPage() {
               onClick={() => handleTypeChange(type)}
               className={`brand-pill px-4 py-2 text-sm font-semibold transition ${
                 currentType === type
-                  ? 'bg-[#0f8c93] text-white shadow-[0_12px_28px_rgba(15,140,147,0.2)]'
-                  : 'text-[#28535b] hover:border-[rgba(15,140,147,0.28)] hover:text-[#184a53]'
+                  ? 'bg-[#3f97d4] text-white shadow-[0_12px_28px_rgba(63,151,212,0.2)]'
+                  : 'text-[#28535b] hover:border-[rgba(63,151,212,0.28)] hover:text-[#184a53]'
               }`}
             >
               {type}
@@ -120,8 +120,8 @@ export default function ProductsPage() {
         </div>
 
         <div className="glass-card mt-8 grid gap-4 p-5 lg:grid-cols-[1fr_auto_auto] lg:items-center">
-          <label className="flex items-center gap-3 rounded-full border border-[rgba(15,140,147,0.16)] bg-white/70 px-4 py-3 text-sm text-[#6a878c]">
-            <FiSearch className="text-[#0f8c93]" />
+          <label className="flex items-center gap-3 rounded-full border border-[rgba(63,151,212,0.16)] bg-white/70 px-4 py-3 text-sm text-[#6a878c]">
+            <FiSearch className="text-[#3f97d4]" />
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -130,15 +130,15 @@ export default function ProductsPage() {
             />
           </label>
 
-          <div className="inline-flex items-center gap-3 rounded-full border border-[rgba(15,140,147,0.16)] px-4 py-3 text-sm text-[#56747b]">
-            <FiSliders className="text-[#0f8c93]" />
+          <div className="inline-flex items-center gap-3 rounded-full border border-[rgba(63,151,212,0.16)] px-4 py-3 text-sm text-[#56747b]">
+            <FiSliders className="text-[#3f97d4]" />
             <span>{filteredProducts.length} modelos</span>
           </div>
 
           <select
             value={sortBy}
             onChange={(event) => setSortBy(event.target.value)}
-            className="rounded-full border border-[rgba(15,140,147,0.16)] bg-white/80 px-4 py-3 text-sm font-medium text-[#184a53] outline-none"
+            className="rounded-full border border-[rgba(63,151,212,0.16)] bg-white/80 px-4 py-3 text-sm font-medium text-[#184a53] outline-none"
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -151,7 +151,9 @@ export default function ProductsPage() {
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
           <div className="glass-card p-5">
             <p className="text-xs uppercase tracking-[0.2em] text-[#7b9195]">Filtro activo</p>
-            <p className="mt-2 font-display text-3xl font-black text-[#184a53]">{currentType}</p>
+            <p className="mt-2 font-display text-2xl font-black text-[#184a53] sm:text-[1.9rem]">
+              {currentType}
+            </p>
           </div>
           <div className="glass-card p-5">
             <p className="text-xs uppercase tracking-[0.2em] text-[#7b9195]">Personalizacion</p>
@@ -159,8 +161,8 @@ export default function ProductsPage() {
             <p className="text-sm leading-7 text-[#56747b]">{personalizationIdeas[1]}</p>
           </div>
           <div className="brand-dark-panel rounded-[24px] p-5 text-white">
-            <p className="text-xs uppercase tracking-[0.2em] text-[#d6ecef]">Atencion rapida</p>
-            <p className="mt-2 font-display text-2xl font-black">
+            <p className="text-xs uppercase tracking-[0.2em] text-[#cbe4fb]">Atencion rapida</p>
+            <p className="mt-2 font-display text-xl font-black sm:text-2xl">
               Cotiza por unidad o por lote segun tu pedido.
             </p>
           </div>
@@ -168,13 +170,13 @@ export default function ProductsPage() {
 
         {status === 'loading' && products.length === 0 ? (
           <div className="glass-card mt-10 p-12 text-center">
-            <p className="font-display text-3xl font-black text-[#184a53]">
+            <p className="font-display text-2xl font-black text-[#184a53] sm:text-[1.9rem]">
               Cargando catalogo...
             </p>
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="glass-card mt-10 border border-dashed p-12 text-center">
-            <p className="font-display text-3xl font-black text-[#184a53]">
+            <p className="font-display text-2xl font-black text-[#184a53] sm:text-[1.9rem]">
               No encontramos coincidencias.
             </p>
             <p className="mt-3 text-sm leading-7 text-[#56747b]">
@@ -182,7 +184,7 @@ export default function ProductsPage() {
             </p>
           </div>
         ) : (
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-10 grid auto-rows-fr gap-5 md:grid-cols-2 xl:grid-cols-3">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -191,10 +193,10 @@ export default function ProductsPage() {
 
         <div className="mt-14 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="brand-panel rounded-[34px] p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
               Necesitas un pedido especial?
             </p>
-            <h2 className="mt-4 font-display text-3xl font-black tracking-tight text-[#184a53]">
+            <h2 className="mt-4 font-display text-2xl font-black tracking-tight text-[#184a53] sm:text-[2rem]">
               Cotiza una taza personalizada con cantidad, acabado y entrega a medida.
             </h2>
             <p className="mt-4 text-sm leading-7 text-[#56747b]">
@@ -220,13 +222,13 @@ export default function ProductsPage() {
           </div>
 
           <div className="glass-card p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
               Preguntas frecuentes
             </p>
             <div className="mt-6 grid gap-4">
               {faqItems.map((item) => (
                 <article key={item.id} className="rounded-[24px] bg-white/60 p-5">
-                  <p className="font-display text-xl font-bold text-[#184a53]">{item.question}</p>
+                  <p className="font-display text-lg font-bold text-[#184a53]">{item.question}</p>
                   <p className="mt-3 text-sm leading-7 text-[#56747b]">{item.answer}</p>
                 </article>
               ))}

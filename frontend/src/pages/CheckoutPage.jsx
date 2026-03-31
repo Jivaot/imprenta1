@@ -70,17 +70,17 @@ export default function CheckoutPage() {
     return (
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="glass-card mx-auto max-w-3xl p-10 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
             Checkout vacio
           </p>
-          <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-[#184a53]">
+          <h1 className="mt-4 font-display text-3xl font-black tracking-tight text-[#184a53] sm:text-[2.2rem]">
             Agrega tazas antes de continuar.
           </h1>
           <Link
             to="/catalogo"
             className="brand-button-primary mt-8 inline-flex rounded-full px-5 py-3 text-sm font-semibold"
           >
-            Volver al catalogo
+            Volver
           </Link>
         </div>
       </section>
@@ -90,11 +90,11 @@ export default function CheckoutPage() {
   if (cartItems.length === 0 && orderSuccess) {
     return (
       <section className="px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl rounded-[34px] border border-emerald-200 bg-white p-10 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-700">
+        <div className="mx-auto max-w-4xl rounded-[34px] border border-[rgba(63,151,212,0.22)] bg-white p-10 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#245c88]">
             Pedido recibido
           </p>
-          <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-[#184a53]">
+          <h1 className="mt-4 font-display text-3xl font-black tracking-tight text-[#184a53] sm:text-[2.2rem]">
             Gracias, tu pedido quedo registrado.
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">
@@ -102,19 +102,19 @@ export default function CheckoutPage() {
           </p>
 
           <div className="mt-8 grid gap-5 lg:grid-cols-3">
-            <div className="rounded-[26px] bg-slate-50 p-5">
+            <div className="rounded-[26px] bg-[#edf5fb] p-5">
               <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Numero</p>
               <p className="mt-2 font-display text-2xl font-black text-slate-950">
                 {orderSuccess.id}
               </p>
             </div>
-            <div className="rounded-[26px] bg-slate-50 p-5">
+            <div className="rounded-[26px] bg-[#edf5fb] p-5">
               <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Total</p>
               <p className="mt-2 font-display text-2xl font-black text-slate-950">
                 {formatPrice(orderSuccess.total)}
               </p>
             </div>
-            <div className="rounded-[26px] bg-slate-50 p-5">
+            <div className="rounded-[26px] bg-[#edf5fb] p-5">
               <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Entrega</p>
               <p className="mt-2 font-display text-2xl font-black text-slate-950">
                 {orderSuccess.customer.deliveryMethod === 'retiro' ? 'Retiro' : 'Despacho'}
@@ -145,10 +145,10 @@ export default function CheckoutPage() {
     <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#0f8c93]">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#3f97d4]">
             Checkout
           </p>
-          <h1 className="mt-3 font-display text-4xl font-black tracking-tight text-[#184a53]">
+          <h1 className="mt-3 font-display text-3xl font-black tracking-tight text-[#184a53] sm:text-[2.2rem]">
             Completa tus datos y deja listo tu pedido.
           </h1>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -173,7 +173,7 @@ export default function CheckoutPage() {
                   name="fullName"
                   value={formState.fullName}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
               <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -184,7 +184,7 @@ export default function CheckoutPage() {
                   name="email"
                   value={formState.email}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
             </div>
@@ -197,7 +197,7 @@ export default function CheckoutPage() {
                   name="phone"
                   value={formState.phone}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 />
               </label>
               <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -206,7 +206,7 @@ export default function CheckoutPage() {
                   name="company"
                   value={formState.company}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                   placeholder="Opcional"
                 />
               </label>
@@ -219,7 +219,7 @@ export default function CheckoutPage() {
                   name="deliveryMethod"
                   value={formState.deliveryMethod}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 >
                   <option value="retiro">Retiro coordinado</option>
                   <option value="despacho">Despacho</option>
@@ -231,7 +231,7 @@ export default function CheckoutPage() {
                   name="paymentMethod"
                   value={formState.paymentMethod}
                   onChange={handleChange}
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 >
                   <option value="transferencia">Transferencia</option>
                   <option value="link">Link de pago</option>
@@ -249,7 +249,7 @@ export default function CheckoutPage() {
                     name="address"
                     value={formState.address}
                     onChange={handleChange}
-                    className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                    className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                   />
                 </label>
                 <label className="space-y-2 text-sm font-medium text-slate-700">
@@ -259,7 +259,7 @@ export default function CheckoutPage() {
                     name="commune"
                     value={formState.commune}
                     onChange={handleChange}
-                    className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                    className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                   />
                 </label>
               </div>
@@ -272,14 +272,14 @@ export default function CheckoutPage() {
                 rows={4}
                 value={formState.notes}
                 onChange={handleChange}
-                className="w-full rounded-[24px] border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                className="w-full rounded-[24px] border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
                 placeholder="Horarios, referencias del pedido o datos para coordinar la entrega."
               />
             </label>
           </div>
 
           <aside className="glass-card space-y-5 p-6 lg:sticky lg:top-28">
-            <h2 className="font-display text-3xl font-black tracking-tight text-[#184a53]">
+            <h2 className="font-display text-2xl font-black tracking-tight text-[#184a53] sm:text-[2rem]">
               Resumen final
             </h2>
 
@@ -313,7 +313,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <div className="rounded-[24px] bg-orange-50 p-5 text-sm leading-7 text-orange-900">
+            <div className="rounded-[24px] border border-[rgba(63,151,212,0.16)] bg-[#edf6ff] p-5 text-sm leading-7 text-[#234767]">
               El total considera el precio base visible de cada producto. La personalizacion final
               se confirma antes de producir.
             </div>

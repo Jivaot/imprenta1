@@ -19,10 +19,10 @@ export default function ContactPage() {
         />
 
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="space-y-5 rounded-[34px] bg-slate-950 p-6 text-white shadow-[0_30px_100px_rgba(15,23,42,0.24)]">
+          <div className="brand-dark-panel space-y-5 rounded-[34px] p-6 text-white shadow-[0_30px_100px_rgba(15,23,42,0.24)]">
             {contactChannels.map((channel) => (
               <div key={channel.id} className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-                <p className="text-xs uppercase tracking-[0.2em] text-orange-200">{channel.title}</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-[#bfeaff]">{channel.title}</p>
                 <p className="mt-2 text-lg font-semibold">{channel.detail}</p>
                 <p className="mt-2 text-sm leading-7 text-slate-300">{channel.helper}</p>
               </div>
@@ -36,7 +36,7 @@ export default function ContactPage() {
                 rows={6}
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
-                className="w-full rounded-[24px] border border-slate-300 px-4 py-3 outline-none transition focus:border-[#0f8c93]"
+                className="w-full rounded-[24px] border border-slate-300 px-4 py-3 outline-none transition focus:border-[#3f97d4]"
               />
             </label>
 
@@ -51,7 +51,7 @@ export default function ContactPage() {
               </a>
               <Link
                 to="/cotizar"
-                className="brand-button-outline inline-flex justify-center rounded-full px-5 py-3 text-sm font-semibold"
+                className="brand-button-outline inline-flex justify-center rounded-full px-5 py-3 text-sm font-semibold text-[#234767]"
               >
                 Ir a cotizar
               </Link>

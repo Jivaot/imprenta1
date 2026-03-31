@@ -82,10 +82,10 @@ export default function ProductDetailPage() {
     return (
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="glass-card mx-auto max-w-3xl p-10 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
             Cargando producto
           </p>
-          <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-[#184a53]">
+          <h1 className="mt-4 font-display text-3xl font-black tracking-tight text-[#184a53] sm:text-[2.2rem]">
             Estamos preparando la ficha de esta taza.
           </h1>
         </div>
@@ -97,22 +97,27 @@ export default function ProductDetailPage() {
     return (
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="glass-card mx-auto max-w-3xl p-10 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
             Producto no encontrado
           </p>
-          <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-[#184a53]">
+          <h1 className="mt-4 font-display text-3xl font-black tracking-tight text-[#184a53] sm:text-[2.2rem]">
             Este modelo ya no esta disponible.
           </h1>
           <Link
             to="/catalogo"
             className="brand-button-primary mt-8 inline-flex rounded-full px-5 py-3 text-sm font-semibold"
           >
-            Volver al catalogo
+            Volver
           </Link>
         </div>
       </section>
     );
   }
+
+  const detailDescription =
+    product.description.trim().toLowerCase() !== product.name.trim().toLowerCase()
+      ? product.description
+      : product.shortDescription || product.heroNote;
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
@@ -182,6 +187,7 @@ export default function ProductDetailPage() {
         quantity,
         categoryName: product.type,
         selectedPackaging,
+        minQuantity: product.min_qty || 1,
         customText,
         uploadedFileName: fileName,
         notes,
@@ -220,7 +226,7 @@ export default function ProductDetailPage() {
               <React.Suspense
                 fallback={
                   <div className="glass-card p-8 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
                       Cargando vista 3D
                     </p>
                     <p className="mt-4 text-base leading-8 text-[#56747b]">
@@ -241,7 +247,6 @@ export default function ProductDetailPage() {
                   textOffsetX={textOffsetX}
                   textOffsetY={textOffsetY}
                   designRotation={designRotation}
-                  whatsappHref={productMessage}
                   onFileChange={handleFileChange}
                   onTextChange={setCustomText}
                   onImageScaleChange={setImageScale}
@@ -260,30 +265,30 @@ export default function ProductDetailPage() {
                 <img
                   src={product.image_url}
                   alt={product.name}
-                  className="h-[460px] w-full object-cover md:h-[560px]"
+                  className="aspect-square w-full object-contain bg-[linear-gradient(180deg,rgba(238,246,255,0.96),rgba(227,239,248,0.82))] p-8 md:p-10"
                 />
               </div>
             )}
 
-            <div className="hidden">
+            <div className="grid gap-4 sm:grid-cols-3">
               <div className="glass-card p-5">
                 <p className="flex items-center gap-2 text-sm font-semibold text-[#184a53]">
-                  <FiPackage className="text-[#f59e0b]" />
+                  <FiPackage className="text-[#3f97d4]" />
                   Pedido minimo
                 </p>
                 <p className="mt-3 text-sm leading-7 text-[#56747b]">{product.minQtyLabel}</p>
               </div>
               <div className="glass-card p-5">
                 <p className="flex items-center gap-2 text-sm font-semibold text-[#184a53]">
-                  <FiClock className="text-[#f59e0b]" />
+                  <FiClock className="text-[#3f97d4]" />
                   Produccion
                 </p>
                 <p className="mt-3 text-sm leading-7 text-[#56747b]">{product.production_time}</p>
               </div>
               <div className="glass-card p-5">
                 <p className="flex items-center gap-2 text-sm font-semibold text-[#184a53]">
-                  <FiGift className="text-[#f59e0b]" />
-                  Enfoque
+                  <FiGift className="text-[#3f97d4]" />
+                  Uso ideal
                 </p>
                 <p className="mt-3 text-sm leading-7 text-[#56747b]">
                   {isCustomizable
@@ -294,13 +299,12 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="glass-card p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
                 Detalles del modelo
               </p>
-              {false &&
-              product.description.trim().toLowerCase() !== product.name.trim().toLowerCase() ? (
-                <p className="mt-4 text-base leading-8 text-[#56747b]">{product.description}</p>
-              ) : null}
+              <p className="mt-4 text-sm leading-7 text-[#56747b] sm:text-base sm:leading-8">
+                {detailDescription}
+              </p>
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
                 <div className="rounded-[24px] bg-white/60 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-[#7b9195]">Tipo</p>
@@ -315,6 +319,13 @@ export default function ProductDetailPage() {
                   <p className="mt-2 font-semibold text-[#184a53]">{formatPrice(product.price)}</p>
                 </div>
               </div>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {product.useCases.map((item) => (
+                  <span key={item} className="brand-pill px-3 py-1 text-xs text-[#56747b]">
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -323,20 +334,20 @@ export default function ProductDetailPage() {
               <span className="brand-pill px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#56747b]">
                 {product.type}
               </span>
-              <span className="rounded-full bg-[#fff0de] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#dd7d18]">
+              <span className="rounded-full bg-[#e9f4ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#35628b]">
                 {product.badge}
               </span>
-              <span className="rounded-full bg-[#dff7f4] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#0f8c93]">
+              <span className="rounded-full bg-[#e9f4ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#3f97d4]">
                 {product.capacityLabel}
               </span>
             </div>
 
             <div>
-              <h1 className="font-display text-4xl font-black tracking-tight text-[#184a53]">
+              <h1 className="font-display text-3xl font-black tracking-tight text-[#184a53] sm:text-[2.2rem]">
                 {product.name}
               </h1>
               {product.shortDescription ? (
-                <p className="mt-4 text-base leading-8 text-[#56747b]">
+                <p className="mt-4 text-sm leading-7 text-[#56747b] sm:text-base">
                   {product.shortDescription}
                 </p>
               ) : null}
@@ -345,7 +356,7 @@ export default function ProductDetailPage() {
             <div className="rounded-[26px] bg-white/65 p-5">
               <p className="text-xs uppercase tracking-[0.24em] text-[#7b9195]">Precio base</p>
               <div className="mt-2 flex items-end gap-3">
-                <p className="font-display text-4xl font-black text-[#184a53]">
+                <p className="font-display text-3xl font-black text-[#184a53] sm:text-[2.2rem]">
                   {formatPrice(product.price)}
                 </p>
                 {product.compareAtPrice ? (
@@ -366,7 +377,7 @@ export default function ProductDetailPage() {
                 <select
                   value={selectedPackaging}
                   onChange={(event) => setSelectedPackaging(event.target.value)}
-                  className="w-full rounded-2xl border border-[rgba(15,140,147,0.14)] bg-white/85 px-4 py-3 text-sm outline-none transition focus:border-[rgba(15,140,147,0.34)]"
+                  className="w-full rounded-2xl border border-[rgba(63,151,212,0.14)] bg-white/85 px-4 py-3 text-sm outline-none transition focus:border-[rgba(63,151,212,0.34)]"
                 >
                   {product.packagingOptions.map((packaging) => (
                     <option key={packaging} value={packaging}>
@@ -382,7 +393,7 @@ export default function ProductDetailPage() {
             </div>
 
             {!isCustomizable ? (
-              <div className="rounded-[24px] border border-dashed border-[rgba(15,140,147,0.16)] bg-[#f8fbfb] p-4 text-sm leading-7 text-[#56747b]">
+              <div className="rounded-[24px] border border-dashed border-[rgba(63,151,212,0.16)] bg-[#f8fbfb] p-4 text-sm leading-7 text-[#56747b]">
                 Este modelo se vende tal como aparece publicado. Si quieres personalizar una taza,
                 te recomendamos nuestro producto estrella.
               </div>
@@ -393,13 +404,13 @@ export default function ProductDetailPage() {
                   value={notes}
                   onChange={(event) => setNotes(event.target.value)}
                   rows={4}
-                  className="w-full rounded-[24px] border border-[rgba(15,140,147,0.14)] bg-white/85 px-4 py-3 text-sm outline-none transition focus:border-[rgba(15,140,147,0.34)]"
+                  className="w-full rounded-[24px] border border-[rgba(63,151,212,0.14)] bg-white/85 px-4 py-3 text-sm outline-none transition focus:border-[rgba(63,151,212,0.34)]"
                   placeholder="Cuenta detalles sobre tu diseno, fecha ideal o entrega."
                 />
               </label>
             )}
 
-            <div className="grid gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={handleAddToCart}
@@ -408,12 +419,6 @@ export default function ProductDetailPage() {
                 <FiShoppingCart />
                 {isCustomizable ? 'Agregar personalizado al carrito' : 'Agregar al carrito'}
               </button>
-              <Link
-                to={`/cotizar?producto=${product.slug}`}
-                className="brand-button-outline inline-flex items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold"
-              >
-                Cotizar
-              </Link>
               <a
                 href={productMessage}
                 target="_blank"
@@ -424,11 +429,14 @@ export default function ProductDetailPage() {
                 Pedir por WhatsApp
               </a>
             </div>
+            <p className="text-xs leading-6 text-[#6b858a]">
+              Si necesitas una cotizacion formal, te ayudamos por WhatsApp con este mismo modelo.
+            </p>
 
             <div className="hidden">
               <div className="glass-card p-5 text-sm leading-7 text-[#56747b]">
                 <p className="flex items-center gap-2 font-semibold text-[#184a53]">
-                  <FiTruck className="text-[#f59e0b]" />
+                  <FiTruck className="text-[#3f97d4]" />
                   Entrega
                 </p>
                 <p className="mt-2">Retiro coordinado o despacho segun cantidad y destino.</p>
@@ -453,7 +461,7 @@ export default function ProductDetailPage() {
             title="Otros modelos de taza que pueden interesarte"
             description="Compara formatos y elige el que mejor se ajusta a tu pedido."
           />
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-10 grid auto-rows-fr gap-5 md:grid-cols-2 xl:grid-cols-4">
             {relatedProducts.map((relatedProduct) => (
               <ProductCard key={relatedProduct.id} product={relatedProduct} />
             ))}

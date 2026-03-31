@@ -11,9 +11,16 @@ import {
 } from 'react-icons/fi';
 import ProductCard from '../components/ProductCard';
 import QuantitySelector from '../components/QuantitySelector';
-import { clearCart, removeItem, updateQuantity } from '../store/slices/cartSlice';
+import {
+  clearCart,
+  removeItem,
+  selectCartItems,
+  selectCartSubtotal,
+  selectCartUnits,
+  updateQuantity,
+} from '../store/slices/cartSlice';
 import { selectFeaturedProducts } from '../store/slices/productsSlice';
-import { calculateCartSubtotal, formatPrice } from '../utils/helpers';
+import { formatPrice } from '../utils/helpers';
 import { buildWhatsAppLink } from '../utils/whatsapp';
 
 const getItemDetails = (item) =>
@@ -27,19 +34,19 @@ const getItemDetails = (item) =>
 
 export default function CartPage() {
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.cart.items);
+  const items = useSelector(selectCartItems);
+  const subtotal = useSelector(selectCartSubtotal);
+  const totalUnits = useSelector(selectCartUnits);
   const featuredProducts = useSelector(selectFeaturedProducts);
-  const subtotal = calculateCartSubtotal(items);
-  const totalUnits = items.reduce((total, item) => total + item.quantity, 0);
 
   if (items.length === 0) {
     return (
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="glass-card mx-auto max-w-3xl p-10 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
             Carrito vacio
           </p>
-          <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-[#184a53]">
+          <h1 className="mt-4 font-display text-3xl font-black tracking-tight text-[#184a53] sm:text-[2.2rem]">
             Aun no agregas productos a tu pedido.
           </h1>
           <p className="mt-4 text-base leading-7 text-[#56747b]">
@@ -69,10 +76,10 @@ export default function CartPage() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#0f8c93]">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#3f97d4]">
               Carrito
             </p>
-            <h1 className="mt-3 font-display text-4xl font-black tracking-tight text-[#184a53]">
+            <h1 className="mt-3 font-display text-3xl font-black tracking-tight text-[#184a53] sm:text-[2.2rem]">
               Tu pedido
             </h1>
             <p className="mt-3 max-w-2xl text-base leading-7 text-[#56747b]">
@@ -102,19 +109,19 @@ export default function CartPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#7b9195]">
               Productos
             </p>
-            <p className="mt-3 font-display text-4xl font-black text-[#184a53]">{items.length}</p>
+            <p className="mt-3 font-display text-3xl font-black text-[#184a53] sm:text-[2.2rem]">{items.length}</p>
           </div>
           <div className="glass-card p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#7b9195]">
               Unidades
             </p>
-            <p className="mt-3 font-display text-4xl font-black text-[#184a53]">{totalUnits}</p>
+            <p className="mt-3 font-display text-3xl font-black text-[#184a53] sm:text-[2.2rem]">{totalUnits}</p>
           </div>
           <div className="glass-card p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#7b9195]">
-              Subtotal
+              Total carrito
             </p>
-            <p className="mt-3 font-display text-4xl font-black text-[#184a53]">
+            <p className="mt-3 font-display text-3xl font-black text-[#184a53] sm:text-[2.2rem]">
               {formatPrice(subtotal)}
             </p>
           </div>
@@ -123,7 +130,7 @@ export default function CartPage() {
         <div className="mt-8 grid gap-8 xl:grid-cols-[minmax(0,1.15fr)_380px]">
           <div className="space-y-5">
             <div className="glass-card overflow-hidden">
-              <div className="hidden grid-cols-[120px_minmax(0,1fr)_140px_180px_140px] gap-4 border-b border-[rgba(15,140,147,0.12)] bg-white/55 px-5 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#7b9195] lg:grid">
+              <div className="hidden grid-cols-[120px_minmax(0,1fr)_140px_180px_140px] gap-4 border-b border-[rgba(63,151,212,0.12)] bg-white/55 px-5 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#7b9195] lg:grid">
                 <span>Producto</span>
                 <span>Detalle</span>
                 <span>Unitario</span>
@@ -131,7 +138,7 @@ export default function CartPage() {
                 <span className="text-right">Subtotal</span>
               </div>
 
-              <div className="divide-y divide-[rgba(15,140,147,0.12)]">
+              <div className="divide-y divide-[rgba(63,151,212,0.12)]">
                 {items.map((item) => {
                   const itemDetails = getItemDetails(item);
 
@@ -155,7 +162,7 @@ export default function CartPage() {
                         <div>
                           <Link
                             to={`/producto/${item.productSlug}`}
-                            className="font-display text-2xl font-bold tracking-tight text-[#184a53] transition hover:text-[#0f8c93]"
+                            className="font-display text-xl font-bold tracking-tight text-[#184a53] transition hover:text-[#3f97d4]"
                           >
                             {item.name}
                           </Link>
@@ -167,7 +174,7 @@ export default function CartPage() {
                             {itemDetails.map((detail) => (
                               <span
                                 key={detail}
-                                className="rounded-full bg-[#eef7f6] px-3 py-1 text-xs font-medium text-[#48686f]"
+                                className="rounded-full bg-[#edf5fb] px-3 py-1 text-xs font-medium text-[#48686f]"
                               >
                                 {detail}
                               </span>
@@ -176,7 +183,7 @@ export default function CartPage() {
                         ) : null}
 
                         {item.notes ? (
-                          <div className="rounded-[20px] border border-[rgba(15,140,147,0.1)] bg-white/75 px-4 py-3 text-sm leading-7 text-[#56747b]">
+                          <div className="rounded-[20px] border border-[rgba(63,151,212,0.1)] bg-white/75 px-4 py-3 text-sm leading-7 text-[#56747b]">
                             {item.notes}
                           </div>
                         ) : null}
@@ -199,6 +206,7 @@ export default function CartPage() {
                           <div className="mt-2 lg:mt-0">
                             <QuantitySelector
                               value={item.quantity}
+                              min={item.minQuantity || 1}
                               onChange={(value) =>
                                 dispatch(updateQuantity({ lineKey: item.lineKey, quantity: value }))
                               }
@@ -233,7 +241,7 @@ export default function CartPage() {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="glass-card p-5">
                 <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#184a53]">
-                  <FiPackage className="text-[#0f8c93]" />
+                  <FiPackage className="text-[#3f97d4]" />
                   Produccion
                 </p>
                 <p className="mt-3 text-sm leading-7 text-[#56747b]">
@@ -243,7 +251,7 @@ export default function CartPage() {
 
               <div className="glass-card p-5">
                 <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#184a53]">
-                  <FiTruck className="text-[#f59e0b]" />
+                  <FiTruck className="text-[#3f97d4]" />
                   Entrega
                 </p>
                 <p className="mt-3 text-sm leading-7 text-[#56747b]">
@@ -258,7 +266,7 @@ export default function CartPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7b9195]">
                 Resumen
               </p>
-              <h2 className="mt-2 font-display text-3xl font-black tracking-tight text-[#184a53]">
+              <h2 className="mt-2 font-display text-2xl font-black tracking-tight text-[#184a53] sm:text-[2rem]">
                 Total del pedido
               </h2>
             </div>
@@ -279,17 +287,17 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <div className="mt-4 border-t border-[rgba(15,140,147,0.12)] pt-4">
+              <div className="mt-4 border-t border-[rgba(63,151,212,0.12)] pt-4">
                 <div className="flex items-end justify-between gap-4">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7b9195]">
-                      Subtotal
+                      Total productos
                     </p>
-                    <p className="mt-2 font-display text-4xl font-black text-[#184a53]">
+                    <p className="mt-2 font-display text-3xl font-black text-[#184a53] sm:text-[2.15rem]">
                       {formatPrice(subtotal)}
                     </p>
                   </div>
-                  <span className="rounded-full bg-[#eef7f6] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#0f8c93]">
+                  <span className="rounded-full bg-[#edf5fb] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#3f97d4]">
                     Pedido actual
                   </span>
                 </div>
@@ -297,9 +305,9 @@ export default function CartPage() {
             </div>
 
             <div className="grid gap-3">
-              <div className="rounded-[24px] border border-[rgba(15,140,147,0.12)] bg-[#f8fbfb] p-4 text-sm leading-7 text-[#56747b]">
+              <div className="rounded-[24px] border border-[rgba(63,151,212,0.12)] bg-[#f8fbfb] p-4 text-sm leading-7 text-[#56747b]">
                 <p className="inline-flex items-center gap-2 font-semibold text-[#184a53]">
-                  <FiShield className="text-[#0f8c93]" />
+                  <FiShield className="text-[#3f97d4]" />
                   Revisa antes de pagar
                 </p>
                 <p className="mt-2">
@@ -330,7 +338,7 @@ export default function CartPage() {
               )}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#0f8c93] transition hover:text-[#14697b]"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#3f97d4] transition hover:text-[#245c88]"
             >
               <FiMessageCircle />
               Necesito ayuda con este pedido
@@ -341,17 +349,17 @@ export default function CartPage() {
         <div className="mt-14">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
                 Recomendados
               </p>
-              <h2 className="mt-3 font-display text-3xl font-black tracking-tight text-[#184a53]">
+              <h2 className="mt-3 font-display text-2xl font-black tracking-tight text-[#184a53] sm:text-[2rem]">
                 Puedes sumar mas modelos
               </h2>
             </div>
 
             <Link
               to="/catalogo"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#0f8c93] transition hover:text-[#14697b]"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#3f97d4] transition hover:text-[#245c88]"
             >
               Ver catalogo
               <FiChevronRight />

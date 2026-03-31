@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { calculateCartSubtotal } from '../../utils/helpers';
 
 const readInitialItems = () => {
   if (typeof window === 'undefined') return [];
@@ -85,4 +86,8 @@ const cartSlice = createSlice({
 });
 
 export const { addItem, removeItem, updateQuantity, clearCart } = cartSlice.actions;
+export const selectCartItems = (state) => state.cart.items;
+export const selectCartUnits = (state) =>
+  state.cart.items.reduce((total, item) => total + item.quantity, 0);
+export const selectCartSubtotal = (state) => calculateCartSubtotal(state.cart.items);
 export default cartSlice.reducer;

@@ -2,17 +2,17 @@ import React from 'react';
 
 export default function SectionHeading({ eyebrow, title, description, align = 'left' }) {
   return (
-    <div className={align === 'center' ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}>
+    <div className={align === 'center' ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'}>
       {eyebrow ? (
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-[#0f8c93]">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#3f97d4]">
           {eyebrow}
         </p>
       ) : null}
-      <h2 className="font-display text-3xl font-extrabold tracking-tight text-[#184a53] sm:text-4xl">
+      <h2 className="font-display text-2xl font-extrabold tracking-tight text-[#184a53] sm:text-[2rem] lg:text-[2.2rem]">
         {title}
       </h2>
       {description ? (
-        <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">{description}</p>
+        <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">{description}</p>
       ) : null}
     </div>
   );

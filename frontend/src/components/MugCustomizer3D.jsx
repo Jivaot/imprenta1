@@ -14,7 +14,6 @@ import {
   FiCamera,
   FiDownload,
   FiImage,
-  FiMessageCircle,
   FiRefreshCw,
   FiRotateCw,
   FiType,
@@ -29,6 +28,15 @@ const PRINT_AREA = {
   width: 2928,
   height: 1416,
   radius: 68,
+};
+
+// Keep uploaded artwork inside the front-visible face of the mug so it does not
+// appear cropped by the side curvature in the default preview.
+const FRONT_ARTWORK_AREA = {
+  widthRatio: 0.52,
+  heightRatio: 0.72,
+  topOffsetRatio: 0.14,
+  textBaselineRatio: 0.8,
 };
 
 const CAMERA_VIEWS = {
@@ -63,10 +71,11 @@ const loadImage = (source) =>
       reject(new Error('Missing image source'));
       return;
     }
-
+    
     const image = new window.Image();
     image.onload = () => resolve(image);
-    image.onerror = reject;
+    image.onerror = () => reject(new Error('Failed to load image'));
+    image.onabort = () => reject(new Error('Image loading aborted'));
     image.src = source;
   });
 
@@ -100,6 +109,8 @@ const drawTextBlock = (context, lines, x, y, lineHeight) => {
   });
 };
 
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
 const drawDesignLayer = async ({
   context,
   canvasWidth,
@@ -127,6 +138,22 @@ const drawDesignLayer = async ({
     radius: (PRINT_AREA.radius / TEXTURE_WIDTH) * canvasWidth,
   };
 
+  if (printArea.width <= 0 || printArea.height <= 0) {
+    return;
+  }
+
+  const artworkArea = {
+    width: printArea.width * FRONT_ARTWORK_AREA.widthRatio,
+    height: printArea.height * FRONT_ARTWORK_AREA.heightRatio,
+  };
+
+  artworkArea.x = printArea.x + (printArea.width - artworkArea.width) / 2;
+  artworkArea.y = printArea.y + printArea.height * FRONT_ARTWORK_AREA.topOffsetRatio;
+
+  if (artworkArea.width <= 0 || artworkArea.height <= 0) {
+    return;
+  }
+
   context.save();
   drawRoundedRectPath(
     context,
@@ -138,22 +165,39 @@ const drawDesignLayer = async ({
   );
   context.clip();
 
-  const imageCenterX = printArea.x + printArea.width / 2 + (imageOffsetX / 100) * printArea.width * 0.5;
-  const imageCenterY = printArea.y + printArea.height / 2 + (imageOffsetY / 100) * printArea.height * 0.4;
-  const textCenterX = printArea.x + printArea.width / 2 + (textOffsetX / 100) * printArea.width * 0.5;
-  const textCenterY = printArea.y + printArea.height * 0.82 + (textOffsetY / 100) * printArea.height * 0.28;
+  const safeImageScale = clamp(imageScale, 50, 220);
+  const safeImageOffsetX = clamp(imageOffsetX, -60, 60);
+  const safeImageOffsetY = clamp(imageOffsetY, -60, 60);
+  const safeTextOffsetX = clamp(textOffsetX, -55, 55);
+  const safeTextOffsetY = clamp(textOffsetY, -50, 50);
+  
+  const imageCenterX =
+    artworkArea.x + artworkArea.width / 2 + (safeImageOffsetX / 100) * (artworkArea.width * 0.15);
+  const imageCenterY =
+    artworkArea.y + artworkArea.height / 2 + (safeImageOffsetY / 100) * (artworkArea.height * 0.15);
+  const textCenterX =
+    artworkArea.x + artworkArea.width / 2 + (safeTextOffsetX / 100) * (artworkArea.width * 0.15);
+  const textCenterY =
+    artworkArea.y +
+    artworkArea.height * FRONT_ARTWORK_AREA.textBaselineRatio +
+    (safeTextOffsetY / 100) * (artworkArea.height * 0.15);
   const rotationRadians = THREE.MathUtils.degToRad(designRotation);
 
   if (uploadedImageUrl) {
     try {
       const image = await loadImage(uploadedImageUrl);
+      
       const baseScale = Math.min(
-        (printArea.width * 0.74) / image.width,
-        (printArea.height * 0.72) / image.height
+        artworkArea.width / image.width,
+        artworkArea.height / image.height
       );
-      const finalScale = baseScale * (imageScale / 100);
-      const imageWidth = Math.max(180, image.width * finalScale);
-      const imageHeight = Math.max(180, image.height * finalScale);
+      const finalScale = baseScale * (safeImageScale / 100);
+      const imageWidth = image.width * finalScale;
+      const imageHeight = image.height * finalScale;
+
+      if (isNaN(imageWidth) || isNaN(imageHeight) || imageWidth <= 0 || imageHeight <= 0) {
+        return;
+      }
 
       context.save();
       context.translate(imageCenterX, imageCenterY);
@@ -162,7 +206,8 @@ const drawDesignLayer = async ({
       context.shadowBlur = 12;
       context.drawImage(image, -imageWidth / 2, -imageHeight / 2, imageWidth, imageHeight);
       context.restore();
-    } catch (error) {
+    } catch {
+      // Si la imagen falla, se omite solo el dibujo de la imagen.
     }
   }
 
@@ -181,7 +226,7 @@ const drawDesignLayer = async ({
     context.shadowColor = 'rgba(255, 255, 255, 0.84)';
     context.shadowBlur = 8;
 
-    const lines = buildTextLines(context, visibleText, printArea.width * 0.52);
+    const lines = buildTextLines(context, visibleText, artworkArea.width * 0.9);
     drawTextBlock(context, lines, 0, 0, lineHeight);
     context.restore();
   }
@@ -457,7 +502,6 @@ export default function MugCustomizer3D({
   textOffsetX,
   textOffsetY,
   designRotation,
-  whatsappHref,
   onFileChange,
   onTextChange,
   onImageScaleChange,
@@ -506,8 +550,8 @@ export default function MugCustomizer3D({
             onClick={() => setViewMode('front')}
             className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] ${
               viewMode === 'front'
-                ? 'bg-[#0f8c93] text-white'
-                : 'border border-[rgba(15,140,147,0.18)] bg-white/85 text-[#56747b]'
+                ? 'bg-[#3f97d4] text-white'
+                : 'border border-[rgba(63,151,212,0.18)] bg-white/85 text-[#56747b]'
             }`}
           >
             Frontal
@@ -517,24 +561,24 @@ export default function MugCustomizer3D({
             onClick={() => setViewMode('angle')}
             className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] ${
               viewMode === 'angle'
-                ? 'bg-[#0f8c93] text-white'
-                : 'border border-[rgba(15,140,147,0.18)] bg-white/85 text-[#56747b]'
+                ? 'bg-[#3f97d4] text-white'
+                : 'border border-[rgba(63,151,212,0.18)] bg-white/85 text-[#56747b]'
             }`}
           >
             Angulada
           </button>
         </div>
 
-        <div className="mt-4 overflow-hidden rounded-[30px] border border-[rgba(15,140,147,0.12)] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.98),rgba(232,246,244,0.94)_56%,rgba(255,244,229,0.9))]">
+        <div className="mt-4 overflow-hidden rounded-[30px] border border-[rgba(63,151,212,0.12)] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.98),rgba(232,246,244,0.94)_56%,rgba(255,244,229,0.9))]">
           <div className="h-[580px] w-full md:h-[640px]">
             <MugViewer ref={viewerRef} designTexture={texture} viewMode={viewMode} />
           </div>
         </div>
 
         <div className="hidden">
-          <div className="rounded-[24px] border border-[rgba(15,140,147,0.12)] bg-white/78 p-4 text-sm leading-7 text-[#56747b]">
+          <div className="rounded-[24px] border border-[rgba(63,151,212,0.12)] bg-white/78 p-4 text-sm leading-7 text-[#56747b]">
             <p className="inline-flex items-center gap-2 font-semibold text-[#184a53]">
-              <FiImage className="text-[#0f8c93]" />
+              <FiImage className="text-[#3f97d4]" />
               Diseño directo
             </p>
             <p className="mt-2">
@@ -542,9 +586,9 @@ export default function MugCustomizer3D({
             </p>
           </div>
 
-          <div className="rounded-[24px] border border-[rgba(15,140,147,0.12)] bg-white/78 p-4 text-sm leading-7 text-[#56747b]">
+          <div className="rounded-[24px] border border-[rgba(63,151,212,0.12)] bg-white/78 p-4 text-sm leading-7 text-[#56747b]">
             <p className="inline-flex items-center gap-2 font-semibold text-[#184a53]">
-              <FiRotateCw className="text-[#0f8c93]" />
+              <FiRotateCw className="text-[#3f97d4]" />
               Revisión completa
             </p>
             <p className="mt-2">
@@ -552,9 +596,9 @@ export default function MugCustomizer3D({
             </p>
           </div>
 
-          <div className="rounded-[24px] border border-[rgba(15,140,147,0.12)] bg-white/78 p-4 text-sm leading-7 text-[#56747b]">
+          <div className="rounded-[24px] border border-[rgba(63,151,212,0.12)] bg-white/78 p-4 text-sm leading-7 text-[#56747b]">
             <p className="inline-flex items-center gap-2 font-semibold text-[#184a53]">
-              <FiCamera className="text-[#0f8c93]" />
+              <FiCamera className="text-[#3f97d4]" />
               Vista comercial
             </p>
             <p className="mt-2">
@@ -567,7 +611,7 @@ export default function MugCustomizer3D({
       <div className="grid gap-4 xl:grid-cols-2">
         <div className="glass-card space-y-4 p-5">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
               Contenido
             </p>
             <h4 className="mt-2 font-display text-xl font-black tracking-tight text-[#184a53]">
@@ -577,26 +621,26 @@ export default function MugCustomizer3D({
 
           <label className="block space-y-2 text-sm font-medium text-[#28535b]">
             <span className="inline-flex items-center gap-2">
-              <FiUploadCloud className="text-[#0f8c93]" />
+              <FiUploadCloud className="text-[#3f97d4]" />
               Logo o imagen
             </span>
             <input
               type="file"
               accept="image/*"
               onChange={onFileChange}
-              className="w-full rounded-2xl border border-[rgba(15,140,147,0.14)] bg-white/85 px-4 py-3 text-sm outline-none file:mr-3 file:rounded-full file:border-0 file:bg-[#0f8c93] file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white"
+              className="w-full rounded-2xl border border-[rgba(63,151,212,0.14)] bg-white/85 px-4 py-3 text-sm outline-none file:mr-3 file:rounded-full file:border-0 file:bg-[#3f97d4] file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white"
             />
           </label>
 
           <label className="block space-y-2 text-sm font-medium text-[#28535b]">
             <span className="inline-flex items-center gap-2">
-              <FiType className="text-[#0f8c93]" />
+              <FiType className="text-[#3f97d4]" />
               Frase personalizada
             </span>
             <input
               value={customText}
               onChange={(event) => onTextChange(event.target.value)}
-              className="w-full rounded-2xl border border-[rgba(15,140,147,0.14)] bg-white/85 px-4 py-3 text-sm outline-none transition focus:border-[rgba(15,140,147,0.34)]"
+              className="w-full rounded-2xl border border-[rgba(63,151,212,0.14)] bg-white/85 px-4 py-3 text-sm outline-none transition focus:border-[rgba(63,151,212,0.34)]"
               placeholder="Ej: Tu marca aqui"
             />
           </label>
@@ -610,7 +654,7 @@ export default function MugCustomizer3D({
                 max="42"
                 value={textSize}
                 onChange={(event) => onTextSizeChange(Number(event.target.value))}
-                className="w-full accent-[#0f8c93]"
+                className="w-full accent-[#3f97d4]"
               />
             </label>
             <label className="space-y-2 text-sm text-[#56747b]">
@@ -619,7 +663,7 @@ export default function MugCustomizer3D({
                 type="color"
                 value={textColor}
                 onChange={(event) => onTextColorChange(event.target.value)}
-                className="h-12 w-full rounded-2xl border border-[rgba(15,140,147,0.14)] bg-white p-2"
+                className="h-12 w-full rounded-2xl border border-[rgba(63,151,212,0.14)] bg-white p-2"
               />
             </label>
           </div>
@@ -627,7 +671,7 @@ export default function MugCustomizer3D({
 
         <div className="glass-card space-y-4 p-5">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0f8c93]">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#3f97d4]">
               Ajustes
             </p>
             <h4 className="mt-2 font-display text-xl font-black tracking-tight text-[#184a53]">
@@ -638,14 +682,17 @@ export default function MugCustomizer3D({
           <div className="grid gap-4 md:grid-cols-2">
             <label className="space-y-2 text-sm text-[#56747b]">
               Escala del arte
-              <input
-                type="range"
-                min="40"
-                max="220"
-                value={imageScale}
-                onChange={(event) => onImageScaleChange(Number(event.target.value))}
-                className="w-full accent-[#0f8c93]"
-              />
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="50"
+                  max="220"
+                  value={imageScale}
+                  onChange={(event) => onImageScaleChange(Number(event.target.value))}
+                  className="w-full accent-[#3f97d4]"
+                />
+                <span className="text-xs font-semibold text-[#184a53] min-w-fit">{imageScale}%</span>
+              </div>
             </label>
             <label className="space-y-2 text-sm text-[#56747b]">
               Rotacion
@@ -655,56 +702,56 @@ export default function MugCustomizer3D({
                 max="180"
                 value={designRotation}
                 onChange={(event) => onDesignRotationChange(Number(event.target.value))}
-                className="w-full accent-[#0f8c93]"
+                className="w-full accent-[#3f97d4]"
               />
             </label>
             <label className="space-y-2 text-sm text-[#56747b]">
               Arte horizontal
               <input
                 type="range"
-                min="-100"
-                max="100"
+                min="-60"
+                max="60"
                 value={imageOffsetX}
                 onChange={(event) => onImageOffsetXChange(Number(event.target.value))}
-                className="w-full accent-[#0f8c93]"
+                className="w-full accent-[#3f97d4]"
               />
             </label>
             <label className="space-y-2 text-sm text-[#56747b]">
               Arte vertical
               <input
                 type="range"
-                min="-100"
-                max="100"
+                min="-60"
+                max="60"
                 value={imageOffsetY}
                 onChange={(event) => onImageOffsetYChange(Number(event.target.value))}
-                className="w-full accent-[#0f8c93]"
+                className="w-full accent-[#3f97d4]"
               />
             </label>
             <label className="space-y-2 text-sm text-[#56747b]">
               Frase horizontal
               <input
                 type="range"
-                min="-100"
-                max="100"
+                min="-55"
+                max="55"
                 value={textOffsetX}
                 onChange={(event) => onTextOffsetXChange(Number(event.target.value))}
-                className="w-full accent-[#0f8c93]"
+                className="w-full accent-[#3f97d4]"
               />
             </label>
             <label className="space-y-2 text-sm text-[#56747b]">
               Frase vertical
               <input
                 type="range"
-                min="-100"
-                max="100"
+                min="-50"
+                max="50"
                 value={textOffsetY}
                 onChange={(event) => onTextOffsetYChange(Number(event.target.value))}
-                className="w-full accent-[#0f8c93]"
+                className="w-full accent-[#3f97d4]"
               />
             </label>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-2">
             <button
               type="button"
               onClick={handleExport}
@@ -721,30 +768,78 @@ export default function MugCustomizer3D({
               <FiRefreshCw />
               Resetear
             </button>
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noreferrer"
-              className="brand-button-accent inline-flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold"
-            >
-              <FiMessageCircle />
-              Pedir por WhatsApp
-            </a>
+          </div>
+
+          {/* Sección de Validaciones y Diagnóstico */}
+          <div className="space-y-3 rounded-[20px] border border-[rgba(63,151,212,0.16)] bg-gradient-to-br from-[#edf6ff] to-[#f8fbff] p-4">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#245c88]">
+              📋 Estado del Diseño
+            </p>
+            <div className="space-y-2 text-xs text-[#56747b]">
+              <div className="flex items-center justify-between">
+                <span>Imagen:</span>
+                <span className={uploadedImageUrl ? 'text-[#245c88] font-semibold' : 'text-[#6b7f92]'}>
+                  {uploadedImageUrl ? '✅ Cargada' : '❌ Sin imagen'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Texto:</span>
+                <span className={customText.trim() ? 'text-[#245c88] font-semibold' : 'text-slate-500'}>
+                  {customText.trim() ? '✅ ' + customText : 'ℹ️ Sin texto'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between border-t border-[rgba(63,151,212,0.08)] pt-2">
+                <span>Escala imagen:</span>
+                <div className="flex items-center gap-1">
+                  <span className="font-mono text-[#184a53]">{imageScale}%</span>
+                  <span className="text-[9px] text-[#9ca3af]">(50-220)</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Tamaño frase:</span>
+                <span className="font-mono text-[#184a53]">{textSize}px</span>
+              </div>
+            </div>
+            
+            {uploadedImageUrl && (
+              <div className="rounded-[12px] border border-[rgba(63,151,212,0.18)] bg-[rgba(63,151,212,0.06)] p-3">
+                <p className="text-[10px] leading-relaxed text-[#245c88]">
+                  <span className="font-bold">✓ Imagen detectada:</span> Ajusta con los sliders para que se vea completa. El área frontal ahora prioriza mostrar la imagen entera sin cortar en los costados de la taza.
+                </p>
+              </div>
+            )}
+
+            {!uploadedImageUrl && (
+              <div className="rounded-[12px] border border-[rgba(148,163,184,0.22)] bg-[rgba(226,232,240,0.4)] p-3">
+                <p className="text-[10px] leading-relaxed text-[#48606f]">
+                  <span className="font-bold">⚠ Sin imagen:</span> Sube un logo o imagen para ver una vista previa realista de cómo se vería impreso.
+                </p>
+              </div>
+            )}
+
+            <details className="cursor-pointer">
+              <summary className="text-[10px] font-semibold text-[#245c88] hover:text-[#184a53] select-none">
+                Abre la consola (F12) para ver logs detallados ▾
+              </summary>
+              <p className="mt-1 text-[9px] leading-relaxed text-[#6b7280]">
+                Si algo no se muestra correctamente, abre las herramientas de desarrollo (F12 o Ctrl+Shift+I) y revisa la pestaña Console para mensajes de diagnóstico.
+              </p>
+            </details>
           </div>
 
           <div className="hidden">
-            <div className="rounded-[24px] border border-dashed border-[rgba(15,140,147,0.16)] bg-[#f8fbfb] p-4 text-sm leading-7 text-[#56747b]">
+            <div className="rounded-[24px] border border-dashed border-[rgba(63,151,212,0.16)] bg-[#f8fbfb] p-4 text-sm leading-7 text-[#56747b]">
               <p className="inline-flex items-center gap-2 font-semibold text-[#184a53]">
-                <FiCamera className="text-[#0f8c93]" />
+                <FiCamera className="text-[#3f97d4]" />
                 Vistas del producto
               </p>
               <p className="mt-2">
                 Alterna entre vista frontal y angulada para revisar mejor el asa y la impresion.
               </p>
             </div>
-            <div className="rounded-[24px] border border-dashed border-[rgba(15,140,147,0.16)] bg-[#f8fbfb] p-4 text-sm leading-7 text-[#56747b]">
+            <div className="rounded-[24px] border border-dashed border-[rgba(63,151,212,0.16)] bg-[#f8fbfb] p-4 text-sm leading-7 text-[#56747b]">
               <p className="inline-flex items-center gap-2 font-semibold text-[#184a53]">
-                <FiRotateCw className="text-[#0f8c93]" />
+                <FiRotateCw className="text-[#3f97d4]" />
                 Acabado premium
               </p>
               <p className="mt-2">

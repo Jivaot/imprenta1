@@ -9,7 +9,8 @@ const TITLE_HEADER = 'poly-component__title';
 const LINK_HEADER = 'poly-component__title href';
 const ORIGINAL_PRICE_HEADER = 'andes-money-amount__fraction 3';
 const INSTALLMENTS_HEADER = 'poly-price__installments';
-const STAR_PRODUCT_NAME = 'Taza Personalizada Ceramica Foto Imagen Logo Sublimado';
+const STAR_PRODUCT_NAME = 'Taza personalizada blanca 11 oz';
+const STAR_PRODUCT_SOURCE_SLUG = 'taza-personalizada-ceramica-foto-imagen-logo-sublimado';
 const STAR_PRODUCT_SLUG = slugify(STAR_PRODUCT_NAME);
 const STAR_PRODUCT_IMAGE =
   'https://tazonespersonalizados.cl/web/wp-content/uploads/2022/01/Taz%C3%B3n-blanco-444ml-1.jpg';
@@ -150,13 +151,15 @@ export const loadMercadoLibreProducts = () => {
         return accumulator;
       }, {});
 
-      const name = repairText(record[TITLE_HEADER] || '').trim();
-      if (!name) {
+      const rawName = repairText(record[TITLE_HEADER] || '').trim();
+      if (!rawName) {
         return null;
       }
 
-      const productSlug = slugify(name);
-      const isStarProduct = productSlug === STAR_PRODUCT_SLUG;
+      const rawProductSlug = slugify(rawName);
+      const isStarProduct = rawProductSlug === STAR_PRODUCT_SOURCE_SLUG;
+      const name = isStarProduct ? STAR_PRODUCT_NAME : rawName;
+      const productSlug = isStarProduct ? STAR_PRODUCT_SLUG : rawProductSlug;
       const type = isStarProduct ? 'Personalizable' : inferType(name);
       const price = isStarProduct ? STAR_PRODUCT_PRICE : parsePrice(record[PRICE_HEADER]);
       const compareAtPrice = parsePrice(record[ORIGINAL_PRICE_HEADER]);
