@@ -1,0 +1,21 @@
+{
+  "name": "estampados-digital-pro",
+  "version": "1.0.0",
+  "description": "Plataforma e-commerce para estampados personalizados de última generación",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && npm --prefix frontend install && npm --prefix backend install",
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run start\"",
+    "build": "npm --prefix frontend run build && npm --prefix backend run build",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "npm --prefix frontend test",
+    "test:backend": "npm --prefix backend test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
